@@ -33,6 +33,7 @@ $nv_update_config['lang']['vi']['info_continue_singer'] = 'Cập nhật cho ngô
 $nv_update_config['lang']['vi']['nv_up_deletefile'] = 'Xóa các file chức năng lấy nhạc từ site khác và các file thừa của nó';
 $nv_update_config['lang']['vi']['nv_up_dbtype'] = 'Cập nhật CSDL phần ca sĩ';
 $nv_update_config['lang']['vi']['nv_up_dbtypeauthor'] = 'Cập nhật CSDL phần nhạc sĩ';
+$nv_update_config['lang']['vi']['nv_up_dbsong'] = 'Cập nhật bảng bài hát';
 
 $nv_update_config['lang']['vi']['nv_up_version'] = 'Cập nhật phiên bản';
 
@@ -42,6 +43,7 @@ $nv_update_config['lang']['en']['info_continue_singer'] = 'Update for lang: %s, 
 $nv_update_config['lang']['en']['nv_up_deletefile'] = 'Delete get song from others site files';
 $nv_update_config['lang']['en']['nv_up_dbtype'] = 'Update database type of singer';
 $nv_update_config['lang']['en']['nv_up_dbtypeauthor'] = 'Update database type of authors';
+$nv_update_config['lang']['en']['nv_up_dbsong'] = 'Update song table';
 
 $nv_update_config['lang']['en']['nv_up_version'] = 'Updated version';
 
@@ -53,6 +55,7 @@ $nv_update_config['tasklist'] = array();
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_deletefile', 'f' => 'nv_up_deletefile' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbtype', 'f' => 'nv_up_dbtype' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbtypeauthor', 'f' => 'nv_up_dbtypeauthor' );
+$nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbsong', 'f' => 'nv_up_dbsong' );
 
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_version', 'f' => 'nv_up_version' );
 
@@ -121,6 +124,7 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getnhacso.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getnhacvui.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getzing.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addsong.php" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	
 	return $return;
@@ -456,6 +460,24 @@ function nv_up_dbtypeauthor()
 		$message = sprintf( $lang_module['info_continue_singer'], $next_lang, $next_mod, ++ $time );
 		$link = $nv_update_baseurl . "&didlang=" . nv_base64_encode( serialize( $didlang ) ) . "&didmod=" . nv_base64_encode( serialize( $didmod ) ) . "&loopcount=" . $loopcount. "&time=" . $time;
 		$return = array( 'status' => 1, 'complete' => 0, 'next' => 0, 'link' => 'NO', 'lang' => 'NO', 'message' => $message, );
+	}
+	
+	return $return;
+}
+
+function nv_up_dbsong()
+{
+	global $nv_update_baseurl, $db, $db_config, $old_module_version, $array_lang_music_update;
+	$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
+
+	foreach( $array_lang_music_update as $lang => $array_mod )
+	{
+		foreach( $array_mod['mod'] as $module_info )
+		{
+			$table = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+			
+			$db->sql_query( "ALTER TABLE `" . $table . "` ADD `is_official` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1: Chính thức, 0: Thành viên đăng' AFTER `hit`" );				
+		}
 	}
 	
 	return $return;
