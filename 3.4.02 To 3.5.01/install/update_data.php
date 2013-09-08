@@ -32,6 +32,7 @@ $nv_update_config['lang']['vi']['info_continue_singer'] = 'Cập nhật cho ngô
 
 $nv_update_config['lang']['vi']['nv_up_deletefile'] = 'Xóa các file chức năng lấy nhạc từ site khác và các file thừa của nó';
 $nv_update_config['lang']['vi']['nv_up_dbtype'] = 'Cập nhật CSDL phần ca sĩ';
+$nv_update_config['lang']['vi']['nv_up_dbtypeauthor'] = 'Cập nhật CSDL phần nhạc sĩ';
 
 $nv_update_config['lang']['vi']['nv_up_version'] = 'Cập nhật phiên bản';
 
@@ -40,6 +41,7 @@ $nv_update_config['lang']['en']['info_continue_singer'] = 'Update for lang: %s, 
 
 $nv_update_config['lang']['en']['nv_up_deletefile'] = 'Delete get song from others site files';
 $nv_update_config['lang']['en']['nv_up_dbtype'] = 'Update database type of singer';
+$nv_update_config['lang']['en']['nv_up_dbtypeauthor'] = 'Update database type of authors';
 
 $nv_update_config['lang']['en']['nv_up_version'] = 'Updated version';
 
@@ -50,6 +52,7 @@ $nv_update_config['tasklist'] = array();
 
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_deletefile', 'f' => 'nv_up_deletefile' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbtype', 'f' => 'nv_up_dbtype' );
+$nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbtypeauthor', 'f' => 'nv_up_dbtypeauthor' );
 
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_version', 'f' => 'nv_up_version' );
 
@@ -240,6 +243,171 @@ function nv_up_dbtype()
 					
 					// Cap nhat cho video
 					$sql = "UPDATE `" . $prefix . "_video` SET `casi`=" . $array_singer_id . " WHERE `casi`=" . $db->dbescape( $singer['id'] );
+					$db->sql_query( $sql );
+				}
+			}
+			
+			// Neu thuc hien xong het module thi co nghia thuc hien xong cho ngon ngu
+			if( sizeof( $didmod[$lang] ) == sizeof( $array_mod['mod'] ) )
+			{
+				$didlang[] = $lang;
+			}
+			
+			break; // Chi chay mot vong lap
+		}
+		
+		break; // Chi chay mot vong lap
+	}
+	
+	// Kiem tra het chua neu het roi thi tra ve hoan thanh, nguoc lai xuat duong dan de tiep tuc
+	if( sizeof( $didlang ) == sizeof( $array_lang_music_update ) )
+	{
+		$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
+	}
+	else
+	{
+		// Xac dinh ngon ngu va module cho lan thuc hien tiep theo
+		$next_lang = '';
+		$next_mod = '';
+		
+		foreach( $array_lang_music_update as $lang => $array_mod )
+		{
+			if( ! in_array( $lang, $didlang ) )
+			{
+				foreach( $array_mod['mod'] as $module_info )
+				{
+					if( ! in_array( $module_info['module_data'], $didmod[$lang] ) )
+					{
+						$next_mod = $module_info['module_title'];
+						break;
+					}
+				}
+			
+				$next_lang = $language_array[$lang]['name'];
+				break;
+			}
+		}
+		
+		$message = sprintf( $lang_module['info_continue_singer'], $next_lang, $next_mod, ++ $time );
+		$link = $nv_update_baseurl . "&didlang=" . nv_base64_encode( serialize( $didlang ) ) . "&didmod=" . nv_base64_encode( serialize( $didmod ) ) . "&loopcount=" . $loopcount. "&time=" . $time;
+		$return = array( 'status' => 1, 'complete' => 0, 'next' => 0, 'link' => 'NO', 'lang' => 'NO', 'message' => $message, );
+	}
+	
+	return $return;
+}
+
+function nv_up_dbtypeauthor()
+{
+	global $nv_update_baseurl, $db, $db_config, $old_module_version, $array_lang_music_update, $nv_Request, $lang_module, $language_array;
+	$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
+
+	// Xac dinh URL
+	$didlang = $nv_Request->get_string( 'didlang', 'get', '' );
+	$didmod = $nv_Request->get_string( 'didmod', 'get', '' );
+	$didlang = $didlang ? unserialize( nv_base64_decode( $didlang ) ) : array();
+	$didmod = $didmod ? unserialize( nv_base64_decode( $didmod ) ) : array();
+	$loopcount = $nv_Request->get_int( 'loopcount', 'get', 0 );
+	$time = $nv_Request->get_int( 'time', 'get', 1 );
+	
+	// Thay doi kieu du lieu - Chi lam lan dau tien
+	if( empty( $didlang ) and empty( $didmod ) and empty( $loopcount ) )
+	{
+		foreach( $array_lang_music_update as $lang => $array_mod )
+		{
+			foreach( $array_mod['mod'] as $module_info )
+			{
+				$prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+				
+				$db->sql_query( "ALTER TABLE `" . $prefix . "` CHANGE `nhacsi` `nhacsi` varchar( 255 ) NOT NULL DEFAULT ''" ); // Bang nhac
+				$db->sql_query( "ALTER TABLE `" . $prefix . "_video` CHANGE `nhacsi` `nhacsi` varchar( 255 ) NOT NULL DEFAULT ''" ); // Bang video
+			}
+		}
+	}
+	
+	$loopcount ++;
+	
+	// Cap nhat lai ca si bang cach
+	foreach( $array_lang_music_update as $lang => $array_mod )
+	{
+		if( in_array( $lang, $didlang ) )
+		{
+			continue; // Thuc hien roi thi bo qua
+		}
+		
+		if( ! isset( $didmod[$lang] ) ) $didmod[$lang] = array(); // Tao bien rong neu khong ton tai
+		
+		foreach( $array_mod['mod'] as $module_info )
+		{
+			if( in_array( $module_info['module_data'], $didmod[$lang] ) )
+			{
+				$time = 1; // Set lai cho module lan 1
+				continue; // Thuc hien roi thi bo qua
+			}
+			
+			$prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+			
+			// Moi lan cap nhat 50 nhac si
+			$sql = "SELECT `id`, `tenthat` FROM `" . $prefix . "_author` WHERE `tenthat` LIKE '% ft. %' ORDER BY `id` DESC LIMIT 0,50";
+			$resultLEV1 = $db->sql_query( $sql );
+			
+			if( ! $db->sql_numrows( $resultLEV1 ) )
+			{
+				// Khong con nhac si nao can xu ly nua thi luu vao bien thong tin
+				$didmod[$lang][] = $module_info['module_data'];
+			}
+			else // Xu ly du lieu
+			{
+				while( $author = $db->sql_fetch_assoc( $resultLEV1 ) )
+				{
+					$author['tenthat'] = str_replace( array( ' FT. ', ' Ft. ', ' fT. ' ), array( ' ft. ', ' ft. ', ' ft. ' ), $author['tenthat'] );
+					$author['tenthat'] = array_filter( array_unique( array_map( "trim", explode( " ft. ", $author['tenthat'] ) ) ) );
+					
+					$array_author_id = array();
+
+					// Neu ton tai nhac si thu nhat thi xoa luon nhac si, nguoc lai thi cap nhat
+					$sql = "SELECT `id` FROM `" . $prefix . "_author` WHERE `tenthat`=" . $db->dbescape( $author['tenthat'][0] ) . " LIMIT 1";
+					$result = $db->sql_query( $sql );
+					
+					if( $db->sql_numrows( $result ) )
+					{
+						$db->sql_query( "DELETE FROM `" . $prefix . "_author` WHERE `id`=" . $author['id'] );
+						$tmp = $db->sql_fetch_assoc( $result );
+						$array_author_id[] = $tmp['id'];
+					}
+					else
+					{
+						$array_author_id[] = $author['id'];
+						$db->sql_query( "UPDATE `" . $prefix . "_author` SET `tenthat`=" . $db->dbescape( $author['tenthat'][0] ) . ", `ten`=" . $db->dbescape( change_alias( $author['tenthat'][0] ) ) . " WHERE `id`=" . $author['id'] );
+					}
+					
+					unset( $author['tenthat'][0] );
+					
+					foreach( $author['tenthat'] as $tenthat )
+					{
+						// Neu ton tai nhac si thi lay ID nguoc lai thi them nhac si moi
+						$sql = "SELECT `id` FROM `" . $prefix . "_author` WHERE `tenthat`=" . $db->dbescape( $tenthat ) . " LIMIT 1";
+						$result = $db->sql_query( $sql );
+						
+						if( $db->sql_numrows( $result ) )
+						{
+							$tmp = $db->sql_fetch_assoc( $result );
+							$array_author_id[] = $tmp['id'];
+						}
+						else
+						{
+							$sql = "INSERT INTO `" . $prefix . "_author` ( `id`, `ten`, `tenthat`, `thumb`, `introduction`, `numsong`, `numvideo` ) VALUES ( NULL, " . $db->dbescape( change_alias( $tenthat ) ) . ", " . $db->dbescape( $tenthat ) . ", '', '', 0, 0 )";
+							$array_author_id[] = $db->sql_query_insert_id( $sql );
+						}
+					}
+					
+					$array_author_id = $db->dbescape( implode( ",", $array_author_id ) );
+					
+					// Cap nhat cho bai hat
+					$sql = "UPDATE `" . $prefix . "` SET `nhacsi`=" . $array_author_id . " WHERE `nhacsi`=" . $db->dbescape( $author['id'] );
+					$db->sql_query( $sql );
+					
+					// Cap nhat cho video
+					$sql = "UPDATE `" . $prefix . "_video` SET `nhacsi`=" . $array_author_id . " WHERE `nhacsi`=" . $db->dbescape( $author['id'] );
 					$db->sql_query( $sql );
 				}
 			}
