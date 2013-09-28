@@ -126,6 +126,8 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getzing.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addsong.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/findasongtoalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/findsongtoalbum.php" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	
 	return $return;
