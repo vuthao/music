@@ -35,6 +35,8 @@ $nv_update_config['lang']['vi']['nv_up_dbtype'] = 'Cập nhật CSDL phần ca s
 $nv_update_config['lang']['vi']['nv_up_dbtypeauthor'] = 'Cập nhật CSDL phần nhạc sĩ';
 $nv_update_config['lang']['vi']['nv_up_dbsong'] = 'Cập nhật bảng bài hát';
 $nv_update_config['lang']['vi']['nv_up_tagsong'] = 'Xóa bỏ phần quản lý block tags song trong admin';
+$nv_update_config['lang']['vi']['nv_up_maincategory'] = 'Xóa bỏ phần quản lý thể loại trên block thể loại trong admin';
+$nv_update_config['lang']['vi']['nv_up_mainalbum'] = 'Xóa bỏ phần quản lý block main album trong admin';
 
 $nv_update_config['lang']['vi']['nv_up_version'] = 'Cập nhật phiên bản';
 
@@ -46,6 +48,8 @@ $nv_update_config['lang']['en']['nv_up_dbtype'] = 'Update database type of singe
 $nv_update_config['lang']['en']['nv_up_dbtypeauthor'] = 'Update database type of authors';
 $nv_update_config['lang']['en']['nv_up_dbsong'] = 'Update song table';
 $nv_update_config['lang']['vi']['nv_up_tagsong'] = 'Delete tags song block management';
+$nv_update_config['lang']['vi']['nv_up_maincategory'] = 'Delete caterory block management';
+$nv_update_config['lang']['vi']['nv_up_mainalbum'] = 'Delete main album block management';
 
 $nv_update_config['lang']['en']['nv_up_version'] = 'Updated version';
 
@@ -59,6 +63,8 @@ $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbtypeauthor', 'f' => 'nv_up_dbtypeauthor' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_dbsong', 'f' => 'nv_up_dbsong' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_tagsong', 'f' => 'nv_up_tagsong' );
+$nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_maincategory', 'f' => 'nv_up_maincategory' );
+$nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_mainalbum', 'f' => 'nv_up_mainalbum' );
 
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_version', 'f' => 'nv_up_version' );
 
@@ -509,6 +515,46 @@ function nv_up_tagsong()
 		foreach( $array_mod['mod'] as $module_info )
 		{
 			$db->sql_query( "DROP TABLE `" . $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'] . "_4category`" );				
+		}
+	}
+	
+	return $return;
+}
+
+function nv_up_maincategory()
+{
+	global $nv_update_baseurl, $db, $db_config, $old_module_version, $array_lang_music_update;
+	$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
+
+	// Xoa file thua
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/maincategory.php" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/maincategory.tpl" );
+
+	foreach( $array_lang_music_update as $lang => $array_mod )
+	{
+		foreach( $array_mod['mod'] as $module_info )
+		{
+			$db->sql_query( "DROP TABLE `" . $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'] . "_main_category`" );				
+		}
+	}
+	
+	return $return;
+}
+
+function nv_up_mainalbum()
+{
+	global $nv_update_baseurl, $db, $db_config, $old_module_version, $array_lang_music_update;
+	$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
+
+	// Xoa file thua
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/mainalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/mainalbum.tpl" );
+
+	foreach( $array_lang_music_update as $lang => $array_mod )
+	{
+		foreach( $array_mod['mod'] as $module_info )
+		{
+			$db->sql_query( "DROP TABLE `" . $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'] . "_main_album`" );				
 		}
 	}
 	
