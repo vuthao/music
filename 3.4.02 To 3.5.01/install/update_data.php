@@ -128,6 +128,7 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addalbum.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/findasongtoalbum.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/findsongtoalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addvideo.php" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findasongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findsongtoalbum.tpl" );
