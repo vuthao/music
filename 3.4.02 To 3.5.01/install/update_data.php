@@ -131,6 +131,7 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findasongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findsongtoalbum.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/video.tpl" );
 	
 	return $return;
 }
