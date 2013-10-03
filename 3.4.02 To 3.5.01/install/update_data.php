@@ -37,6 +37,7 @@ $nv_update_config['lang']['vi']['nv_up_dbsong'] = 'Cập nhật bảng bài hát
 $nv_update_config['lang']['vi']['nv_up_tagsong'] = 'Xóa bỏ phần quản lý block tags song trong admin';
 $nv_update_config['lang']['vi']['nv_up_maincategory'] = 'Xóa bỏ phần quản lý thể loại trên block thể loại trong admin';
 $nv_update_config['lang']['vi']['nv_up_mainalbum'] = 'Xóa bỏ phần quản lý block main album trong admin';
+$nv_update_config['lang']['vi']['nv_up_settingtable'] = 'Thay đổi cấu trúc bảng dữ liệu câu hình của module';
 
 $nv_update_config['lang']['vi']['nv_up_version'] = 'Cập nhật phiên bản';
 
@@ -50,6 +51,7 @@ $nv_update_config['lang']['en']['nv_up_dbsong'] = 'Update song table';
 $nv_update_config['lang']['vi']['nv_up_tagsong'] = 'Delete tags song block management';
 $nv_update_config['lang']['vi']['nv_up_maincategory'] = 'Delete caterory block management';
 $nv_update_config['lang']['vi']['nv_up_mainalbum'] = 'Delete main album block management';
+$nv_update_config['lang']['vi']['nv_up_settingtable'] = 'Change config table and data';
 
 $nv_update_config['lang']['en']['nv_up_version'] = 'Updated version';
 
@@ -65,6 +67,7 @@ $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_tagsong', 'f' => 'nv_up_tagsong' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_maincategory', 'f' => 'nv_up_maincategory' );
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_mainalbum', 'f' => 'nv_up_mainalbum' );
+$nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_settingtable', 'f' => 'nv_up_settingtable' );
 
 $nv_update_config['tasklist'][] = array( 'r' => '3.5.01', 'rq' => 2, 'l' => 'nv_up_version', 'f' => 'nv_up_version' );
 
@@ -566,6 +569,64 @@ function nv_up_mainalbum()
 		foreach( $array_mod['mod'] as $module_info )
 		{
 			$db->sql_query( "DROP TABLE `" . $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'] . "_main_album`" );				
+		}
+	}
+	
+	return $return;
+}
+
+function nv_up_settingtable()
+{
+	global $nv_update_baseurl, $db, $db_config, $old_module_version, $array_lang_music_update;
+	$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
+
+	foreach( $array_lang_music_update as $lang => $array_mod )
+	{
+		foreach( $array_mod['mod'] as $module_info )
+		{
+			$table = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'] . "_setting";
+			
+			// Lay toan bo cau hinh
+			$array = array();
+			$sql = "SELECT * FROM `" . $table . "`";
+			$result = $db->sql_query( $sql );
+			
+			while( $row = $db->sql_fetchrow( $result ) )
+			{
+				if( in_array( $row['key'], array( "root_contain", "description" ) ) )
+				{
+					$array[$row['key']] = $row['char'];
+				}
+				else
+				{
+					$array[$row['key']] = $row['value'];
+				}
+			}
+			
+			// Xoa bien cau hinh khong con dung toi
+			unset( $array['version'], $array['revision'] );
+			
+			// Tao them cac cau hinh moi
+			$array['author_singer_defis'] = 'ft.';
+			$array['alias_listen_song'] = 'bai-hat';
+			$array['alias_view_album'] = 'album';
+			$array['alias_view_videoclip'] = 'video-clip';
+			
+			// Xoa bang du lieu
+			$db->sql_query( "DROP `" . $table . "`" );
+
+			// Tao lai bang du lieu moi co cau truc khac
+			$db->sql_query( "CREATE TABLE `" . $table . "` (
+			  `key` varchar(60) NOT NULL DEFAULT '' COMMENT 'Khóa cấu hình',
+			  `value` varchar(255) NOT NULL DEFAULT '' COMMENT 'Giá trị được thiết lập',
+			  UNIQUE KEY `key` (`key`)
+			) ENGINE=MyISAM" );
+			
+			// Ghi lai du lieu vao bang cau hinh
+			foreach( $array as $key -> $value )
+			{
+				$db->sql_query( "INSERT INTO `" . $table . "` (`key`, `value`) VALUES( '" . $key . "', '" . $value . "' )" );
+			}
 		}
 	}
 	
