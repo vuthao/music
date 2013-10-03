@@ -140,6 +140,13 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addvideo.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addauthor.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/addsinger.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/active.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/del.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/delall.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/listactive.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/sort.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/sortmainalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/delads.php" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findasongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findsongtoalbum.tpl" );
