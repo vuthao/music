@@ -154,6 +154,8 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/editcomment.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/editgift.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/editplaylist.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_mainalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_maincategory.php" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findasongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findsongtoalbum.tpl" );
