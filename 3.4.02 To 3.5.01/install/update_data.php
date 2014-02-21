@@ -169,6 +169,7 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_maincategory.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_hotalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_search.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/default/images/music/main-top-bg.png" );
 	
 	return $return;
 }
