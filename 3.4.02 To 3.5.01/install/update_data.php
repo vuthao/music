@@ -135,6 +135,7 @@ function nv_up_deletefile()
 	$return = array( 'status' => 1, 'complete' => 1, 'next' => 1, 'link' => 'NO', 'lang' => 'NO', 'message' => '', );
 
 	// Xoa cac file thua
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/data.functions.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getnhaccuatui.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getnhacso.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/getnhacvui.php" );
@@ -161,6 +162,10 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_maincategory.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_hotalbum.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_search.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/global.block_music_menu.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/language/block.global.block_music_menu_en.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/language/block.global.block_music_menu_vi.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/language/rss.ini" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findasongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findsongtoalbum.tpl" );
@@ -169,6 +174,7 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_maincategory.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_hotalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_search.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_music_menu.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/default/images/music/main-top-bg.png" );
 	
 	return $return;
