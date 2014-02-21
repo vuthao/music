@@ -159,10 +159,16 @@ function nv_up_deletefile()
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/admin/editplaylist.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_mainalbum.php" );
 	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_maincategory.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_hotalbum.php" );
+	@nv_deletefile( NV_ROOTDIR . "/modules/music/blocks/module.block_search.php" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/nhaccuatui.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findasongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/findsongtoalbum.tpl" );
 	@nv_deletefile( NV_ROOTDIR . "/themes/admin_default/modules/music/video.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_mainalbum.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_maincategory.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_hotalbum.tpl" );
+	@nv_deletefile( NV_ROOTDIR . "/themes/default/modules/music/block_search.tpl" );
 	
 	return $return;
 }
