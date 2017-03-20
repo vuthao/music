@@ -55,8 +55,12 @@ if (in_array($lang, $array_lang_module_setup) and $num_module_exists > 1) {
     $sql_drop_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_categories
       DROP " . $lang . "_cat_name,
       DROP " . $lang . "_cat_alias,
-      DROP " . $lang . "_cat_introtext,
-      DROP " . $lang . "_cat_keywords
+      DROP " . $lang . "_cat_absitetitle,
+      DROP " . $lang . "_cat_abintrotext,
+      DROP " . $lang . "_cat_abkeywords,
+      DROP " . $lang . "_cat_mvsitetitle,
+      DROP " . $lang . "_cat_mvintrotext,
+      DROP " . $lang . "_cat_mvkeywords
     ";
     
     $sql_drop_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_nations
@@ -167,6 +171,8 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
   stat_videos int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Số video',
   time_add int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Tạo lúc',
   time_update int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Cập nhật lúc',
+  show_inalbum tinyint(1) unsigned NOT NULL DEFAULT '0',
+  show_invideo tinyint(1) unsigned NOT NULL DEFAULT '0',
   weight smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT 'Sắp thứ tự',
   status smallint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (cat_id),
@@ -176,8 +182,12 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
 $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_categories 
 	ADD " . $lang . "_cat_name varchar(250) NOT NULL DEFAULT '',
 	ADD " . $lang . "_cat_alias varchar(250) NOT NULL DEFAULT '',
-	ADD " . $lang . "_cat_introtext text NOT NULL,
-	ADD " . $lang . "_cat_keywords text NOT NULL
+	ADD " . $lang . "_cat_absitetitle varchar(250) NOT NULL DEFAULT '',
+	ADD " . $lang . "_cat_abintrotext text NOT NULL,
+	ADD " . $lang . "_cat_abkeywords text NOT NULL,
+	ADD " . $lang . "_cat_mvsitetitle varchar(250) NOT NULL DEFAULT '',
+	ADD " . $lang . "_cat_mvintrotext text NOT NULL,
+	ADD " . $lang . "_cat_mvkeywords text NOT NULL
 ";
 
 // Quốc gia: Áp dụng cho ca sĩ nhạc sĩ
@@ -314,7 +324,7 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
   cat_ids varchar(250) NOT NULL DEFAULT '' COMMENT 'Danh sách ID phụ của thể loại có dạng id1,id2,...',
   singer_ids varchar(250) NOT NULL DEFAULT '' COMMENT 'Danh sách ID của ca sĩ có dạng id1,id2,id3,...',
   author_ids varchar(250) NOT NULL DEFAULT '' COMMENT 'Danh sách ID của nhạc sĩ có dạng id1,id2,id3,...',
-  album_id varchar(250) NOT NULL DEFAULT '' COMMENT 'Danh sách album của bài hát có dạng id1,id2,id3,...',
+  album_ids varchar(250) NOT NULL DEFAULT '' COMMENT 'Danh sách album của bài hát có dạng id1,id2,id3,...',
   video_id int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'ID video của bài hát',
   resource_avatar varchar(255) NOT NULL COMMENT 'Avatar',
   resource_cover varchar(255) NOT NULL COMMENT 'Cover',
@@ -332,7 +342,7 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
   UNIQUE KEY song_code (song_code),
   KEY singer_ids (singer_ids),
   KEY author_ids (author_ids),
-  KEY album_id (album_id),
+  KEY album_ids (album_ids),
   KEY video_id (video_id),
   KEY cat_ids (cat_ids),
   KEY uploader_id (uploader_id),
@@ -467,7 +477,7 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
   config_value_default varchar(255) NOT NULL DEFAULT '',
   UNIQUE KEY config_name (config_name)
 )ENGINE=MyISAM";
-$sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_config ADD config_value_" . $lang . " varchar(255) NOT NULL DEFAULT ''";
+$sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_config ADD config_value_" . $lang . " varchar(255) NULL DEFAULT NULL";
 
 $default_config = array();
 $default_config['home_albums_display'] = '1';
