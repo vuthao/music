@@ -26,18 +26,22 @@
 .ms-list-song-title h3:hover .ms-sg,
 .ms-list-song-action ul li a:hover,
 .ms-main-list-song-title h4 a:hover,
-.ms-main-list-song-title h3 a:hover {
+.ms-main-list-song-title h3 a:hover,
+ul.ms-singers-alphabet li a.active {
     color: #428bca;
 }
 .ms-title-section h2 a,
 .ms-title-section h2 span,
-.ms-artist-header-nav ul li a.active {
+.ms-artist-header-nav ul li a.active,
+ul.ms-singers-nation-nav li a.active,
+ul.ms-singers-nation-nav li a:hover {
     border-color: #428bca;
 }
 .ms-main-list-song-item article {
     border-color: #f2f2f2;
 }
 .ms-gird-albums-iconplay,
+.ms-gird-videos-iconplay,
 .ms-artist-header-top h1,
 .ms-artist-header-top p,
 .ms-main-singer-thumb h4 a,
@@ -53,6 +57,13 @@
 .ms-list-song-action ul li a,
 .ms-main-list-song-action ul li a {
     color: #c0c0c0;
+}
+.ms-gird-albums-thumb,
+.ms-gird-videos-thumb,
+.ms-gird-singers-thumb,
+.ms-main-singer-thumb,
+.ms-main-list-song-thumb {
+    background-color: #c4ccdf;
 }
 
 /* GLOBAL */
@@ -93,7 +104,6 @@
     display: block;
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: #000;
     background-position: center top;
     margin-bottom: 8px;
 }
@@ -157,6 +167,163 @@
 }
 .ms-gird-albums-description h4 {
     margin: 0;
+}
+
+/* VIDEOS GIRD */
+.ms-gird-videos-item {
+    margin-bottom: 10px;
+}
+.ms-gird-videos-item article {
+    display: block;
+}
+.ms-gird-videos-thumb {
+    position: relative;
+    display: block;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+    margin-bottom: 8px;
+}
+.ms-gird-videos-fw img {
+    width: 100%;
+    height: auto;
+}
+.ms-gird-videos-cover {
+    display: none;
+}
+.ms-gird-videos-iconplay {
+    display: block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -25px 0 0 -25px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform: scale(0);
+    -webkit-backface-visibility: hidden;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    -o-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+    text-decoration: none;
+    font-size: 50px;
+    line-height: 50px;
+    text-align: center;
+}
+.ms-gird-videos-fw:hover .ms-gird-videos-iconplay {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -moz-opacity: 1;
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+}
+.ms-gird-videos-mask {
+    display: block;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    -o-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+.ms-gird-videos-fw:hover .ms-gird-videos-mask {
+    background: rgba(0, 0, 0, .3);
+}
+.ms-gird-videos-description h3 {
+    margin: 0;
+}
+.ms-gird-videos-description h4 {
+    margin: 0;
+}
+
+/* SINGERS GIRD */
+.ms-gird-singers-item {
+    margin-bottom: 10px;
+}
+.ms-gird-singers-item article {
+    display: block;
+}
+.ms-gird-singers-thumb {
+    position: relative;
+    display: block;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+    margin-bottom: 8px;
+}
+.ms-gird-singers-fw img {
+    width: 100%;
+    height: auto;
+}
+.ms-gird-singers-cover {
+    display: none;
+}
+.ms-gird-singers-mask {
+    display: block;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    -o-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+.ms-gird-singers-fw:hover .ms-gird-singers-mask {
+    background: rgba(0, 0, 0, .3);
+}
+.ms-gird-singers-description h3 {
+    margin: 0;
+    text-align: center;
+}
+.ms-gird-singers-description h3 a {
+    font-weight: 700!important;
+}
+ul.ms-singers-alphabet {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+ul.ms-singers-alphabet li {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    width: 3.2%;
+    text-align: center;
+}
+h1.ms-singers-alltitle {
+    text-transform: uppercase;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+ul.ms-singers-nation-nav {
+    display: block;
+    padding: 0;
+    margin: 0 0 10px 0;
+    border-bottom: 1px #eee solid;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+ul.ms-singers-nation-nav li {
+    display: inline-block;
+    margin: 0 30px 0 0;
+    padding: 0;
+}
+ul.ms-singers-nation-nav li a {
+    display: inline-block;
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    border-color: transparent;
+}
+ul.ms-singers-nation-nav li:last-child {
+    margin-right: 0;
 }
 
 /* SINGERS IN MODAL */
@@ -343,7 +510,6 @@ ul.ms-list-song > li:last-child {
 .ms-main-singer-thumb {
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: #000;
     background-position: center top;
     position: relative;
     overflow: hidden;
@@ -408,7 +574,6 @@ ul.ms-list-song > li:last-child {
     display: block;
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: #000;
     background-position: center top;
 }
 .ms-main-list-song-fw img {

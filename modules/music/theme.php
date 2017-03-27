@@ -67,6 +67,140 @@ function nv_theme_gird_albums($array)
 }
 
 /**
+ * nv_theme_gird_videos()
+ * 
+ * @param mixed $array
+ * @return
+ */
+function nv_theme_gird_videos($array)
+{
+    global $module_file, $lang_module, $lang_global, $module_info, $global_array_config, $module_upload, $op;
+
+    $xtpl = new XTemplate('gird-videos.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
+    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('GLANG', $lang_global);
+    $xtpl->assign('UNIQUEID', nv_genpass(6));
+
+    if (is_file(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/images/' . $module_file . '/pix-16-9.gif')) {
+        $pix_image = NV_BASE_SITEURL . 'themes/' . $module_info['template'] . '/images/' . $module_file . '/pix-16-9.gif';
+    } else {
+        $pix_image = NV_BASE_SITEURL . 'themes/default/images/' . $module_file . '/pix-16-9.gif';
+    }
+    $xtpl->assign('PIX_IMAGE', $pix_image);
+
+    foreach ($array as $row) {
+        $row['resource_avatar'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/' . $row['resource_avatar'];
+        
+        $xtpl->assign('ROW', $row);
+        
+        $num_singers = sizeof($row['singers']);
+        if ($num_singers > $global_array_config['limit_singers_displayed']) {
+            $xtpl->assign('VA_SINGERS', $global_array_config['various_artists']);
+            
+            foreach ($row['singers'] as $singer) {
+                $xtpl->assign('SINGER', $singer);
+                $xtpl->parse('main.loop.va_singer.loop');
+            }
+            
+            $xtpl->parse('main.loop.va_singer');
+        } elseif (!empty($row['singers'])) {
+            $i = 0;
+            foreach ($row['singers'] as $singer) {
+                $i++;
+                $xtpl->assign('SINGER', $singer);
+                
+                if ($i > 1) {
+                    $xtpl->parse('main.loop.show_singer.loop.separate');
+                }
+                $xtpl->parse('main.loop.show_singer.loop');
+            }
+            $xtpl->parse('main.loop.show_singer');
+        } else {
+            $xtpl->assign('UNKNOW_SINGER', $global_array_config['unknow_singer']);
+            $xtpl->parse('main.loop.no_singer');
+        }
+        
+        $xtpl->parse('main.loop');
+    }
+
+    $xtpl->parse('main');
+    return $xtpl->text('main');
+}
+
+/**
+ * nv_theme_gird_singers()
+ * 
+ * @param mixed $array_singers
+ * @param mixed $nation_id
+ * @param mixed $alphabet
+ * @param mixed $generate_page
+ * @return
+ */
+function nv_theme_gird_singers($array_singers, $nation_id, $alphabet, $generate_page)
+{
+    global $module_file, $lang_module, $lang_global, $module_info, $global_array_config, $module_upload, $op, $global_array_nation, $array_alphabets;
+
+    $xtpl = new XTemplate('gird-singers.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
+    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('GLANG', $lang_global);
+    
+    $xtpl->assign('NATION_ALL_LINK', NV_MOD_FULLLINK_AMP . $module_info['alias']['list-singers']);
+    if (empty($nation_id)) {
+        $xtpl->parse('main.nav.all_active');
+    }
+    
+    foreach ($global_array_nation as $nation) {
+        $nation['nation_link'] = NV_MOD_FULLLINK_AMP . $module_info['alias']['list-singers'] . '/' . $nation['nation_alias'] . '-' . $nation['nation_code'];
+        $xtpl->assign('NATION', $nation);
+        
+        if ($nation['nation_id'] == $nation_id) {
+            $xtpl->parse('main.nav.loop.active');
+        }
+        
+        $xtpl->parse('main.nav.loop');
+    }
+    $xtpl->parse('main.nav');
+    
+    $base_alphabet_url = NV_MOD_FULLLINK_AMP . $module_info['alias']['list-singers'];
+    if (!empty($nation_id)) {
+        $base_alphabet_url .= '/' . $global_array_nation[$nation_id]['nation_alias'] . '-' . $global_array_nation[$nation_id]['nation_code'];
+    }
+    
+    $xtpl->assign('ALPHABET_ALL_TITLE', '#');
+    $xtpl->assign('ALPHABET_ALL_LINK', $base_alphabet_url);
+    if (empty($alphabet)) {
+        $xtpl->parse('main.alphabet.all_active');
+    }
+    
+    foreach ($array_alphabets as $alphabet_i) {
+        $xtpl->assign('ALPHABET_TITLE', $alphabet_i);
+        $xtpl->assign('ALPHABET_LINK', $base_alphabet_url . '/' . $alphabet_i);
+        
+        if ($alphabet_i == $alphabet) {
+            $xtpl->parse('main.alphabet.loop.active');
+        }
+        
+        $xtpl->parse('main.alphabet.loop');
+    }
+    $xtpl->parse('main.alphabet');
+
+    foreach ($array_singers as $row) {
+        $row['resource_avatar'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/' . $row['resource_avatar'];
+        
+        $xtpl->assign('ROW', $row);
+        $xtpl->parse('main.loop');
+    }
+
+    if (!empty($generate_page)) {
+        $xtpl->assign('GENERATE_PAGE', $generate_page);
+        $xtpl->parse('main.generate_page');
+    }
+
+    $xtpl->parse('main');
+    return $xtpl->text('main');
+}
+
+/**
  * nv_theme_list_songs()
  * 
  * @param mixed $array
@@ -207,6 +341,8 @@ function nv_theme_main($content_albums, $content_videos, $content_singers, $cont
     }
     
     if (!empty($content_videos)) {
+        $xtpl->assign('VIDEOS_LINK', NV_MOD_FULLLINK_AMP . $module_info['alias']['list-videos']);
+        $xtpl->assign('VIDEOS_HTML', nv_theme_gird_videos($content_videos));
         $xtpl->parse('videos');
         $contents[$global_array_config['home_videos_weight']] = $xtpl->text('videos');
     }
@@ -216,6 +352,14 @@ function nv_theme_main($content_albums, $content_videos, $content_singers, $cont
     return implode("\n", $contents);
 }
 
+/**
+ * nv_theme_list_albums()
+ * 
+ * @param mixed $array
+ * @param bool $is_detail_cat
+ * @param mixed $generate_page
+ * @return
+ */
 function nv_theme_list_albums($array, $is_detail_cat = false, $generate_page)
 {
     global $module_file, $lang_module, $lang_global, $module_info, $global_array_config;
@@ -230,6 +374,45 @@ function nv_theme_list_albums($array, $is_detail_cat = false, $generate_page)
         
         if (empty($is_detail_cat)) {
             $xtpl->assign('CAT_LINK', NV_MOD_FULLLINK_AMP . $module_info['alias']['list-albums'] . '/' . $cat['cat']['cat_alias'] . '-' . $global_array_config['code_prefix']['cat'] . $cat['cat']['cat_code']);
+            $xtpl->parse('main.loopcat.cat_link');
+        } else {
+            $xtpl->parse('main.loopcat.cat_text');
+        }
+        
+        $xtpl->parse('main.loopcat');
+    }
+
+    if (!empty($generate_page)) {
+        $xtpl->assign('GENERATE_PAGE', $generate_page);
+        $xtpl->parse('main.generate_page');
+    }
+
+    $xtpl->parse('main');
+    return $xtpl->text('main');
+}
+
+/**
+ * nv_theme_list_videos()
+ * 
+ * @param mixed $array
+ * @param bool $is_detail_cat
+ * @param mixed $generate_page
+ * @return
+ */
+function nv_theme_list_videos($array, $is_detail_cat = false, $generate_page)
+{
+    global $module_file, $lang_module, $lang_global, $module_info, $global_array_config;
+    
+    $xtpl = new XTemplate('list-videos.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
+    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('GLANG', $lang_global);
+
+    foreach ($array as $cat) {
+        $xtpl->assign('CAT', $cat['cat']);
+        $xtpl->assign('VIDEOS_HTML', nv_theme_gird_videos($cat['videos']));
+        
+        if (empty($is_detail_cat)) {
+            $xtpl->assign('CAT_LINK', NV_MOD_FULLLINK_AMP . $module_info['alias']['list-videos'] . '/' . $cat['cat']['cat_alias'] . '-' . $global_array_config['code_prefix']['cat'] . $cat['cat']['cat_code']);
             $xtpl->parse('main.loopcat.cat_link');
         } else {
             $xtpl->parse('main.loopcat.cat_text');
@@ -281,13 +464,13 @@ function nv_theme_view_singer($data_singer, $request_tab, $array_songs, $array_v
             $num_info_had++;
             $xtpl->parse('main.profile.singer_nickname');
         }
-        if (!empty($data_singer['singer_realname'])) {
+        if (!empty($data_singer['artist_realname'])) {
             $num_info_had++;
-            $xtpl->parse('main.profile.singer_realname');
+            $xtpl->parse('main.profile.artist_realname');
         }
-        if (!empty($data_singer['singer_hometown'])) {
+        if (!empty($data_singer['artist_hometown'])) {
             $num_info_had++;
-            $xtpl->parse('main.profile.singer_hometown');
+            $xtpl->parse('main.profile.artist_hometown');
         }
         if (!empty($data_singer['singer_prize'])) {
             $num_info_had++;
@@ -304,21 +487,21 @@ function nv_theme_view_singer($data_singer, $request_tab, $array_songs, $array_v
             $xtpl->parse('main.profile.nation');
         }
         
-        if (!empty($data_singer['singer_birthday']) and !empty($data_singer['singer_birthday_lev'])) {
+        if (!empty($data_singer['artist_birthday']) and !empty($data_singer['artist_birthday_lev'])) {
             $num_info_had++;
-            if ($data_singer['singer_birthday_lev'] == 3) {
+            if ($data_singer['artist_birthday_lev'] == 3) {
                 $format_date = 'd/m/Y';
-            } elseif ($data_singer['singer_birthday_lev'] == 2) {
+            } elseif ($data_singer['artist_birthday_lev'] == 2) {
                 $format_date = 'm/Y';
             } else {
                 $format_date = 'Y';
             }
-            $xtpl->assign('SINGER_BIRTHDAY', nv_date($format_date, $data_singer['singer_birthday']));
-            $xtpl->parse('main.profile.singer_birthday');
+            $xtpl->assign('artist_birthday', nv_date($format_date, $data_singer['artist_birthday']));
+            $xtpl->parse('main.profile.artist_birthday');
         }
         
         if (empty($num_info_had)) {
-            $xtpl->assign('EMPTY_MESSAGE', sprintf($lang_module['view_singer_empty_profile'], $data_singer['singer_name']));
+            $xtpl->assign('EMPTY_MESSAGE', sprintf($lang_module['view_singer_empty_profile'], $data_singer['artist_name']));
             $xtpl->parse('main.profile.empty');
         }
         
@@ -327,12 +510,41 @@ function nv_theme_view_singer($data_singer, $request_tab, $array_songs, $array_v
     
     if (!empty($array_albums)) {
         $xtpl->assign('ALBUM_HTML', nv_theme_gird_albums($array_albums));
+        
+        if (empty($request_tab)) {
+            $xtpl->assign('ALBUM_LINK', nv_get_view_singer_link($data_singer, true, 'album'));
+            $xtpl->parse('main.albums.link');
+        } else {
+            $xtpl->parse('main.albums.text');
+        }
+        
         $xtpl->parse('main.albums');
     }
     
     if (!empty($array_songs)) {
         $xtpl->assign('SONG_HTML', nv_theme_list_songs($array_songs));
+        
+        if (empty($request_tab)) {
+            $xtpl->assign('SONG_LINK', nv_get_view_singer_link($data_singer, true, 'song'));
+            $xtpl->parse('main.songs.link');
+        } else {
+            $xtpl->parse('main.songs.text');
+        }
+        
         $xtpl->parse('main.songs');
+    }
+    
+    if (!empty($array_videos)) {
+        $xtpl->assign('VIDEO_HTML', nv_theme_gird_videos($array_videos));
+        
+        if (empty($request_tab)) {
+            $xtpl->assign('VIDEO_LINK', nv_get_view_singer_link($data_singer, true, 'video'));
+            $xtpl->parse('main.videos.link');
+        } else {
+            $xtpl->parse('main.videos.text');
+        }
+        
+        $xtpl->parse('main.videos');
     }
 
     if (!empty($generate_page)) {

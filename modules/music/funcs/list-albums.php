@@ -15,6 +15,9 @@ $page_title = $global_array_config['funcs_sitetitle']['album'];
 $key_words = $global_array_config['funcs_keywords']['album'];
 $description = $global_array_config['funcs_description']['album'];
 
+// Các thẻ meta Open Graph
+nv_get_fb_share_image();
+
 $array = array();
 $array_select_fields = nv_get_album_select_fields();
 $array_singer_ids = $array_singers = array();
@@ -114,7 +117,7 @@ if ($page > 1 and empty($array)) {
 }
 
 // Xác định ca sĩ
-$array_singers = nv_get_singers($array_singer_ids);
+$array_singers = nv_get_artists($array_singer_ids);
 
 foreach ($array as $id1 => $row1) {
     foreach ($row1['albums'] as $id => $row) {
@@ -159,7 +162,10 @@ if (!empty($catid)) {
 if ($page > 1) {
     $page_text = $lang_global['page'] . ' ' . number_format($page, 0, ',', '.');
     $page_title .= NV_TITLEBAR_DEFIS . $page_text;
-    $description .= NV_TITLEBAR_DEFIS . $page_text;
+    if (!empty($description)) {
+        $description = nv_clean60($description, $global_config['description_length'] - 20);
+        $description .= NV_TITLEBAR_DEFIS . $page_text;
+    }
 }
 
 $contents = nv_theme_list_albums($array, !empty($catid), $generate_page);
